@@ -4,29 +4,36 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../bloc/counter_bloc.dart';
 
 class App extends StatelessWidget {
-  const App({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      home: BlocProvider(
-        create: (context) => CounterBloc(),
-        child: const LocalCounterPage(),
+    return BlocProvider(
+      create: (BuildContext context) => CounterBloc(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        home: CounterPage(),
       ),
     );
   }
 }
 
-class LocalCounterPage extends StatelessWidget {
-  const LocalCounterPage({super.key});
-
+class CounterText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final counterBloc = BlocProvider.of<CounterBloc>(context);
+    return BlocBuilder<CounterBloc, int>(
+      builder: (context, count) {
+        return Text('$count');
+      },
+    );
+  }
+}
+
+class CounterPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final CounterBloc counterBloc = BlocProvider.of<CounterBloc>(context);
     return Scaffold(
-      appBar: AppBar(title: const Text('Counter')),
-      body: const Center(
+      appBar: AppBar(title: Text('Counter')),
+      body: Center(
         child: CounterText(),
       ),
       floatingActionButton: Column(
@@ -34,18 +41,18 @@ class LocalCounterPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            padding: EdgeInsets.symmetric(vertical: 5.0),
             child: FloatingActionButton(
-              child: const Icon(Icons.add),
+              child: Icon(Icons.add),
               onPressed: () {
                 counterBloc.add(CounterIncrementPressed());
               },
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 5.0),
+            padding: EdgeInsets.symmetric(vertical: 5.0),
             child: FloatingActionButton(
-              child: const Icon(Icons.remove),
+              child: Icon(Icons.remove),
               onPressed: () {
                 counterBloc.add(CounterDecrementPressed());
               },
@@ -53,19 +60,6 @@ class LocalCounterPage extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class CounterText extends StatelessWidget {
-  const CounterText({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<CounterBloc, int>(
-      builder: (context, count) {
-        return Text('$count');
-      },
     );
   }
 }
